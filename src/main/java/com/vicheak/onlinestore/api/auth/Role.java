@@ -1,4 +1,4 @@
-package com.vicheak.onlinestore.auth;
+package com.vicheak.onlinestore.api.auth;
 
 import jakarta.persistence.*;
 import lombok.Getter;

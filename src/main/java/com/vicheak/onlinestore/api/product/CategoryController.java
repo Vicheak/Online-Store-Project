@@ -1,6 +1,6 @@
-package com.vicheak.onlinestore.product;
+package com.vicheak.onlinestore.api.product;
 
-import com.vicheak.onlinestore.product.web.CategoryDto;
+import com.vicheak.onlinestore.api.product.web.CategoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +27,16 @@ public class CategoryController {
     @PostMapping
     public void createNew(@RequestBody CategoryDto categoryDto) {
         categoryService.createNew(categoryDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/{catName}")
+    public void updateByName(@PathVariable String catName, CategoryDto categoryDto) {
+        categoryService.updateByName(catName, categoryDto);
+    }
+
+    @DeleteMapping("/{catName}")
+    public void deleteByName(@PathVariable String catName){
+        categoryService.deleteByName(catName);
     }
 }

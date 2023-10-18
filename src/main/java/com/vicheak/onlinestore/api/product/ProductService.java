@@ -1,8 +1,8 @@
-package com.vicheak.onlinestore.product;
+package com.vicheak.onlinestore.api.product;
 
-import com.vicheak.onlinestore.product.web.CreateProductDto;
-import com.vicheak.onlinestore.product.web.ProductDto;
-import com.vicheak.onlinestore.product.web.UpdateProductDto;
+import com.vicheak.onlinestore.api.product.web.ProductDto;
+import com.vicheak.onlinestore.api.product.web.UpdateProductDto;
+import com.vicheak.onlinestore.api.product.web.CreateProductDto;
 
 import java.util.List;
 

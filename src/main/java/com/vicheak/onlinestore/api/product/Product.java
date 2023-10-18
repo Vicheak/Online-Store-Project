@@ -1,4 +1,4 @@
-package com.vicheak.onlinestore.product;
+package com.vicheak.onlinestore.api.product;
 
 import jakarta.persistence.*;
 import lombok.Getter;

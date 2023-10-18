@@ -1,4 +1,4 @@
-package com.vicheak.onlinestore.product;
+package com.vicheak.onlinestore.api.auth;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,17 +11,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "authorities")
+public class Authority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(unique = true)
     private String name;
-    @Column(columnDefinition = "TEXT")
-    private String description;
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    @ManyToMany(mappedBy = "authorities")
+    private List<Role> roles;
 
 }
