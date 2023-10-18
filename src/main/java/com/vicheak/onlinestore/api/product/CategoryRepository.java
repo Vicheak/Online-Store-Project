@@ -1,4 +1,4 @@
-package com.vicheak.onlinestore.product;
+package com.vicheak.onlinestore.api.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
