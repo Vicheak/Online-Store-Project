@@ -2,8 +2,10 @@ package com.vicheak.onlinestore.api.file.web;
 
 import com.vicheak.onlinestore.api.file.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,15 @@ import java.util.List;
 public class FileController {
 
     private final FileService fileService;
+
+    @GetMapping(value = "/download/{name}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> download(@PathVariable String name) {
+        Resource resource = fileService.downloadByName(name);
+        return ResponseEntity.ok()
+                //.contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header("Content-Disposition", "attachment; filename=" + resource.getFilename())
+                .body(resource);
+    }
 
     @GetMapping
     public List<FileDto> findAll() {
