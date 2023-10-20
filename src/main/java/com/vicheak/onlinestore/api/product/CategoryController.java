@@ -31,7 +31,7 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{catName}")
-    public void updateByName(@PathVariable String catName, CategoryDto categoryDto) {
+    public void updateByName(@PathVariable String catName, @RequestBody CategoryDto categoryDto) {
         categoryService.updateByName(catName, categoryDto);
     }
 

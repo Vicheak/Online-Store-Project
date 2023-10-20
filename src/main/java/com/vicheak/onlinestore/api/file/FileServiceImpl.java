@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,6 +26,22 @@ public class FileServiceImpl implements FileService {
 
     @Value("${file.base-uri}")
     private String fileBaseUri;
+
+    @Value("${file.download-uri}")
+    private String fileDownloadUri;
+
+    @Override
+    public Resource downloadByName(String name) {
+        Path path = Paths.get(serverPath + name);
+
+        if (Files.exists(path)) {
+            //Start loading the file by name
+            return UrlResource.from(path.toUri());
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Resource is not found");
+    }
 
     @Override
     public FileDto uploadSingle(MultipartFile file) {
@@ -59,6 +76,7 @@ public class FileServiceImpl implements FileService {
             return FileDto.builder()
                     .name(name)
                     .uri(fileBaseUri + name)
+                    .downloadUri(fileDownloadUri + name)
                     .size(resource.contentLength())
                     .extension(this.getExtension(name))
                     .build();
@@ -70,25 +88,24 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileDto> findAll() {
+        List<FileDto> fileDtoList = new ArrayList<>();
         Path path = Paths.get(serverPath);
 
-        try {
-            Stream<Path> paths = Files.list(path);
-
-            return paths.map(p -> {
-                        Resource resource = UrlResource.from(p.toUri());
-                        try {
-                            return FileDto.builder()
-                                    .name(resource.getFilename())
-                                    .uri(fileBaseUri + resource.getFilename())
-                                    .size(resource.contentLength())
-                                    .extension(this.getExtension(resource.getFilename()))
-                                    .build();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .collect(Collectors.toList());
+        try (
+                Stream<Path> paths = Files.list(path);
+        ) {
+            List<Path> pathList = paths.toList();
+            for (Path p : pathList){
+                Resource resource = UrlResource.from(p.toUri());
+                fileDtoList.add(FileDto.builder()
+                        .name(resource.getFilename())
+                        .uri(fileBaseUri + resource.getFilename())
+                        .downloadUri(fileDownloadUri + resource.getFilename())
+                        .size(resource.contentLength())
+                        .extension(this.getExtension(resource.getFilename()))
+                        .build());
+            }
+            return fileDtoList;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -121,6 +138,7 @@ public class FileServiceImpl implements FileService {
                 Files.delete(p);
             }
         } catch (IOException e) {
+
             throw new RuntimeException(e);
         }
     }
@@ -155,6 +173,7 @@ public class FileServiceImpl implements FileService {
         return FileDto.builder()
                 .name(name)
                 .uri(uri)
+                .downloadUri(fileDownloadUri + name)
                 .size(size)
                 .extension(extension)
                 .build();
