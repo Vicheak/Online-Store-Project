@@ -46,7 +46,7 @@ public class FileController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<FileDto> uploadSingle(@RequestPart List<MultipartFile> files) {
+    public List<FileDto> uploadMultiple(@RequestPart List<MultipartFile> files) {
         return fileService.uploadMultiple(files);
     }
 
