@@ -3,17 +3,16 @@ package com.vicheak.onlinestore.api.auth;
 import com.vicheak.onlinestore.api.auth.web.LoginDto;
 import com.vicheak.onlinestore.api.auth.web.RegisterDto;
 import com.vicheak.onlinestore.api.auth.web.VerifyDto;
+import com.vicheak.onlinestore.api.mail.Mail;
+import com.vicheak.onlinestore.api.mail.MailService;
 import com.vicheak.onlinestore.api.user.User;
 import com.vicheak.onlinestore.api.user.UserService;
 import com.vicheak.onlinestore.api.user.web.NewUserDto;
 import com.vicheak.onlinestore.util.RandomUtil;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
-    private final JavaMailSender javaMailSender;
+    private final MailService mailService;
 
     @Value("${spring.mail.username}")
     private String adminMail;
@@ -43,13 +42,14 @@ public class AuthServiceImpl implements AuthService {
         authRepository.updateVerifiedCode(registerDto.username(), verifiedCode);
 
         //Send verifiedCode via email
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setTo(newUserDto.email());
-        helper.setFrom(adminMail);
-        helper.setSubject("Online Store - Email Verification");
-        helper.setText(String.format("<h1>Your verified code : %s</h1>", verifiedCode), true);
-        javaMailSender.send(mimeMessage);
+        Mail<String> verifiedMail = new Mail<>();
+        verifiedMail.setSubject("Email Verification");
+        verifiedMail.setSender(adminMail);
+        verifiedMail.setReceiver(newUserDto.email());
+        verifiedMail.setTemplate("auth/verify-mail");
+        verifiedMail.setMetaData(verifiedCode);
+
+        mailService.sendMail(verifiedMail);
     }
 
     @Override

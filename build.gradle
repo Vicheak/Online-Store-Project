@@ -22,6 +22,9 @@ repositories {
 }
 
 dependencies {
+    //Thymeleaf template engine
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     //Java Mail Sender
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
