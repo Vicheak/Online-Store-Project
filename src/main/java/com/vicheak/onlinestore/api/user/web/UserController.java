@@ -1,9 +1,11 @@
 package com.vicheak.onlinestore.api.user.web;
 
 import com.vicheak.onlinestore.api.user.UserService;
+import com.vicheak.onlinestore.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,9 +15,14 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/me")
+    public UserDto me(Authentication auth) {
+        return userService.me(auth);
+    }
+
     @PatchMapping("/{uuid}")
     public void updateByUuid(@PathVariable String uuid,
-                             @RequestBody UpdateUserDto updateUserDto){
+                             @RequestBody UpdateUserDto updateUserDto) {
         userService.updateByUuid(uuid, updateUserDto);
     }
 
