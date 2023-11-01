@@ -1,7 +1,6 @@
 package com.vicheak.onlinestore.api.user.web;
 
 import com.vicheak.onlinestore.api.user.UserService;
-import com.vicheak.onlinestore.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
