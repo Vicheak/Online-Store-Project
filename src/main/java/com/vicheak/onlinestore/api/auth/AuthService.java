@@ -1,9 +1,6 @@
 package com.vicheak.onlinestore.api.auth;
 
-import com.vicheak.onlinestore.api.auth.web.AuthDto;
-import com.vicheak.onlinestore.api.auth.web.LoginDto;
-import com.vicheak.onlinestore.api.auth.web.RegisterDto;
-import com.vicheak.onlinestore.api.auth.web.VerifyDto;
+import com.vicheak.onlinestore.api.auth.web.*;
 import jakarta.mail.MessagingException;
 
 public interface AuthService {
@@ -13,5 +10,7 @@ public interface AuthService {
     void verify(VerifyDto verifyDto);
 
     AuthDto login(LoginDto loginDto);
+
+    AuthDto refreshToken(RefreshTokenDto refreshTokenDto);
 
 }
