@@ -3,11 +3,13 @@ package com.vicheak.onlinestore.api.user;
 import com.vicheak.onlinestore.api.user.web.NewUserDto;
 import com.vicheak.onlinestore.api.user.web.UpdateUserDto;
 import com.vicheak.onlinestore.api.user.web.UserDto;
-import com.vicheak.onlinestore.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
@@ -27,8 +30,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto me(Authentication authentication) {
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userMapper.toUserDto(customUserDetails.getUser());
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        log.info("Jwt Subject = {}", jwt.getSubject());
+        log.info("Jwt Id = {}", jwt.getId());
+        User user = userRepository.findByUsernameAndIsDeletedFalseAndIsVerifiedTrue(jwt.getId())
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("User is not found")
+                );
+        return userMapper.toUserDto(user);
     }
 
     @Transactional
