@@ -64,7 +64,7 @@ public class SecurityConfig {
 
         //TODO: What you want to customize
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**", "/api/v1/files/**").permitAll() //spring security allows these endpoints
+                .requestMatchers("/api/v1/auth/**", "/api/v1/files/**", "/file/**", "/auth/**").permitAll() //spring security allows these endpoints
                 .requestMatchers(
                         HttpMethod.GET,
                         "/api/v1/categories/**",

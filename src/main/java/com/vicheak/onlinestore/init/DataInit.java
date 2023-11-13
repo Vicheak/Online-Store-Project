@@ -22,7 +22,7 @@ public class DataInit {
     private final AuthorityRepository authorityRepository;
     private final CategoryRepository categoryRepository;
 
-    //@PostConstruct
+    @PostConstruct
     public void init() {
         categoryRepository.save(Category.builder()
                 .name("Electronic")
